@@ -6,7 +6,7 @@ import com.amadeus.resources.FlightOfferSearch;
 import com.amadeus.resources.FlightPrice;
 import com.amadeus.resources.Traveler;
 
-class AmadeusCreateOrder {
+class AmadeusCreateOrder implements CreateOrder {
     private final Amadeus amadeus;
 
     public AmadeusCreateOrder(Amadeus amadeus) {

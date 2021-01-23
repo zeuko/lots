@@ -4,6 +4,7 @@ import com.ServerException;
 import com.amadeus.exceptions.ResponseException;
 import com.amadeus.resources.FlightOfferSearch;
 import com.amadeus.resources.Traveler;
+import com.decorator.CreateOrderWithEmailNotification;
 import com.repository.model.communication.CreateFlightReservationRequest;
 import com.repository.model.communication.SearchFlightRequest;
 
@@ -15,7 +16,7 @@ public class AmadeusFacade {
 
     private final AmadeusFlightSearch amadeusFlightSearch;
     private final AmadeusOrderManagement amadeusOrderManagement;
-    private final AmadeusCreateOrder amadeusCreateOrder;
+    private final CreateOrder amadeusCreateOrder;
 
     public AmadeusFacade() {
         Amadeus amadeus = Amadeus
@@ -24,7 +25,7 @@ public class AmadeusFacade {
 
         this.amadeusFlightSearch = new AmadeusFlightSearch(amadeus);
         this.amadeusOrderManagement = new AmadeusOrderManagement(amadeus);
-        this.amadeusCreateOrder = new AmadeusCreateOrder(amadeus);
+        this.amadeusCreateOrder = new CreateOrderWithEmailNotification(new AmadeusCreateOrder(amadeus));
     }
 
 
@@ -32,7 +33,8 @@ public class AmadeusFacade {
         String flightOrder;
         try {
 
-            flightOrder = amadeusCreateOrder.createFlightOrder((Traveler[]) createFlightReservation.getTravelers().toArray(), createFlightReservation.getFlightOfferSearch());
+            Traveler[] travelers = (Traveler[]) createFlightReservation.getTravelers().toArray();
+            flightOrder = amadeusCreateOrder.createFlightOrder(travelers, createFlightReservation.getFlightOfferSearch());
         } catch (ResponseException e) {
             throw new ServerException("Api error create order flight: " + e);
         }
